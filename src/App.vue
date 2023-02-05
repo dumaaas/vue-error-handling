@@ -1,28 +1,145 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <div class="d-flex align-center">vue-error-handler</div>
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-main>
+      <div class="main">
+        <div class="error-handler">
+          <h2>Make some errors</h2>
+          <div class="error-main">
+            <v-btn
+              color="primary"
+              elevation="2"
+              x-large
+              @click="makeError('1')"
+            >
+              Error 1
+            </v-btn>
+            <v-btn
+              color="primary"
+              elevation="2"
+              x-large
+              class="ml-2"
+              @click="makeError('2')"
+            >
+              Error 2
+            </v-btn>
+            <v-btn
+              color="primary"
+              elevation="2"
+              x-large
+              class="ml-2"
+              @click="makeError('3')"
+            >
+              Error 3
+            </v-btn>
+            <v-btn
+              color="primary"
+              elevation="2"
+              x-large
+              class="ml-2"
+              @click="makeError('4')"
+            >
+              Error 4
+            </v-btn>
+          </div>
+        </div>
+        <div class="error-divider"></div>
+        <div class="error-data">
+          <h2>Error list</h2>
+          <v-data-table
+            dense
+            :headers="headers"
+            :items="errorData"
+            item-key="name"
+            class="elevation-1"
+          ></v-data-table>
+        </div>
+      </div>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { useErrorStore } from "@/stores/errorStore";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+
+  components: {},
+
+  data: () => ({
+    headers: [
+      { text: "Name", value: "name" },
+      { text: "Message", value: "message" },
+      { text: "Component", value: "component" },
+      { text: "Stack", value: "stack" },
+      { text: "Line", value: "line" },
+      { text: "File", value: "file" },
+      { text: "Info", value: "info" },
+    ],
+  }),
+
+  methods: {
+    makeError(type) {
+      switch (type) {
+        case "1":
+          console.log("Refference Error (function): ");
+          // eslint-disable-next-line no-undef
+          undefinedFunction();
+          break;
+        case "2":
+          // eslint-disable-next-line no-undef
+          console.log("Refference Error (var): ", undefinedVar);
+          break;
+        case "3":
+          // eslint-disable-next-line no-undef
+          console.log("URI Error: ", decodeURI("%sdfk"));
+          break;
+        case "4":
+          // eslint-disable-next-line no-undef
+          var num = 20;
+          console.log("Type Error: : ", num.split(""));
+
+          break;
+        default:
+          // eslint-disable-next-line no-undef
+          console.log("undefinedVar: ", undefinedVar);
+          break;
+      }
+    },
+  },
+  mounted() {
+    useErrorStore().fetchErrorData();
+  },
+  computed: {
+    errorData() {
+      return useErrorStore().getErrorData;
+    },
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #f6f5f5;
+  height: 100%;
+}
+
+.error-divider {
+  width: 100%;
+  height: 1px;
+  background: #1976d2;
+}
+
+h2 {
+  padding-bottom: 15px;
 }
 </style>
