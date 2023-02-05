@@ -58,6 +58,15 @@
             item-key="name"
             class="elevation-1"
           ></v-data-table>
+          <div class="error-divider" style="margin-top: 25px;"></div>
+          <h2 style="margin-top: 15px;">Warn list</h2>
+          <v-data-table
+            dense
+            :headers="headersWarn"
+            :items="warnData"
+            item-key="name"
+            class="elevation-1"
+          ></v-data-table>
         </div>
       </div>
     </v-main>
@@ -80,6 +89,10 @@ export default {
       { text: "Line", value: "line" },
       { text: "File", value: "file" },
       { text: "Info", value: "info" },
+    ],
+    headersWarn: [
+      { text: "Message", value: "message" },
+      { text: "Trace", value: "trace" },
     ],
   }),
 
@@ -114,11 +127,15 @@ export default {
   },
   mounted() {
     useErrorStore().fetchErrorData();
+    useErrorStore().fetchWarnData();
   },
   computed: {
     errorData() {
       return useErrorStore().getErrorData;
     },
+    warnData() {
+      return useErrorStore().getWarnData;
+    }
   },
 };
 </script>

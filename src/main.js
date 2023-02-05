@@ -2,9 +2,14 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import db from './plugins/firebase';
-import { createPinia, PiniaVuePlugin } from 'pinia'
+import {
+  createPinia,
+  PiniaVuePlugin
+} from 'pinia'
 Vue.use(PiniaVuePlugin)
-import { useErrorStore } from "@/stores/errorStore";
+import {
+  useErrorStore
+} from "@/stores/errorStore";
 
 const pinia = createPinia()
 
@@ -46,11 +51,35 @@ var logErrors = (err, vm, info) => {
     });
 }
 
+// var logWarnings = (msg, trace) => {
+//   console.log('Loging warnings to API...')
+
+//   db.collection("warnings")
+//     .add({
+//       Message: msg.toString(),
+//       Trace: trace ? trace.toString() : '',
+//     })
+//     .then(() => {
+//       console.log("Document successfully written!");
+//       useErrorStore().fetchErrorData();
+//     })
+//     .catch((error) => {
+//       console.error("Error writing document: ", error);
+//     });
+// }
+
+
+
 
 Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   console.error(err, vm, info);
   logErrors(err, vm, info);
+}
+
+Vue.config.warnHandler = function (msg, vm, trace) {
+  console.warn(`Warn: ${msg}\nTrace: ${trace}`);
+  // logWarnings(msg, trace);
 }
 
 window.onerror = function (msg, url, line, col, error) {

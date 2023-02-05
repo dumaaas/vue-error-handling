@@ -7,7 +7,8 @@ import db from "@/plugins/firebase";
 export const useErrorStore = defineStore('errorStore', {
     state: () => {
         return {
-            errorData: []
+            errorData: [],
+            warnData: [],
         }
     },
     // could also be defined as
@@ -16,11 +17,11 @@ export const useErrorStore = defineStore('errorStore', {
         getErrorData: (state) => {
             return state.errorData;
         },
+        getWarnData: (state) => {
+            return state.warnData;
+        },
     },
     actions: {
-        setErrorData(payload) {
-            this.errorData = payload;
-        },
         fetchErrorData() {
             this.errorData = [];
             db.collection("errors")
@@ -38,8 +39,24 @@ export const useErrorStore = defineStore('errorStore', {
                             info: doc.data().Info,
                             file: doc.data().File,
                         });
-                        console.log(doc.id, " => ", doc.data());
-                        console.log('hej mala malenaa')
+                    });
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+        },
+        fetchWarnData() {
+            this.warnData = [];
+            db.collection("warnings")
+            .orderBy("Message", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        this.warnData.push({
+                            id: doc.id,
+                            message: doc.data().Message,
+                            trace: doc.data().Trace,
+                        });
                     });
                 })
                 .catch((error) => {
