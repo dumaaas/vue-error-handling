@@ -24,6 +24,7 @@ export const useErrorStore = defineStore('errorStore', {
         fetchErrorData() {
             this.errorData = [];
             db.collection("errors")
+            .orderBy("Name", "desc")
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
